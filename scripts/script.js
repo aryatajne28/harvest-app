@@ -18,13 +18,20 @@ addForm.addEventListener('submit', (event) => {
 
     const formData = new FormData(addForm);
 
-    const activity = Object.fromEntries(formData);
-
     const areaFormValue = formData.get('area');
 
     const areaValue = areasObjectArray.find((area) => area.area == areaFormValue);
 
     areaValue.total += Number(formData.get('time'));
+    renderAreasList();
+});
 
-    console.log(areasObjectArray);
-})
+const activityListElement = document.getElementById('activity-list')
+
+const renderAreasList = () => {
+    areasObjectArray.forEach((areaItem) => {
+        const activityElement = document.createElement('li');
+        activityElement.textContent = `${areaItem.area} : ${(areaItem.total) / 60} hrs `;
+        activityListElement.appendChild(activityElement);
+    })
+}
