@@ -21,19 +21,26 @@ addForm.addEventListener('submit', (event) => {
     const areaFormValue = formData.get('area');
 
     const areaValue = areasObjectArray.find((area) => area.area == areaFormValue);
-
     areaValue.total += Number(formData.get('time'));
-    renderAreasList();
+
+    const activityListChild = Array.from(activityListElement.children);
+    activityListChild.forEach((listElement) => {
+        if (listElement.getAttribute('data-area') == areaValue.area) {
+            listElement.textContent = `${areaValue.area}: ${areaValue.total / 60} hours`;
+        }
+    })
+
 });
 
+
 const activityListElement = document.getElementById('activity-list')
-
-
-
 const renderAreasList = () => {
-    var list = '';
     areasObjectArray.forEach((areaItem) => {
-        list += (`<li> ${areaItem.area} : ${(areaItem.total) / 60} hrs </li>`);
+        const listElement = document.createElement('li');
+        listElement.textContent = `${areaItem.area}: ${areaItem.total / 60} hours`;
+        listElement.dataset.area = areaItem.area;
+        activityListElement.appendChild(listElement);
     })
-    activityListElement.innerHTML = list;
 }
+
+renderAreasList();
