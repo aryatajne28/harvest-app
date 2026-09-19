@@ -28,10 +28,12 @@ addForm.addEventListener('submit', (event) => {
 
 const activityListElement = document.getElementById('activity-list')
 
+
+
 const renderAreasList = () => {
+    var list = '';
     areasObjectArray.forEach((areaItem) => {
-        const activityElement = document.createElement('li');
-        activityElement.textContent = `${areaItem.area} : ${(areaItem.total) / 60} hrs `;
-        activityListElement.appendChild(activityElement);
+        list += (`<li> ${areaItem.area} : ${(areaItem.total) / 60} hrs </li>`);
     })
+    activityListElement.innerHTML = list;
 }
