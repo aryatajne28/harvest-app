@@ -1,46 +1,60 @@
 
-const areasObjectArray = [{ area: 'Coding', total: 0 }, { area: 'Art', total: 0 }, { area: 'Reading', total: 0 }];
-
+const areas = ['Coding', 'Art', 'Reading'];
+const activities = [];
 const dropdownElement = document.getElementById('area');
 
-areasObjectArray.forEach((area) => {
+areas.forEach((area) => {
     const optionElement = document.createElement('option');
-    optionElement.value = area.area;
-    optionElement.textContent = area.area;
+    optionElement.value = area;
+    optionElement.textContent = area;
     dropdownElement.appendChild(optionElement);
 })
 
 
 const addForm = document.getElementById('add-activity');
 
-addForm.addEventListener('submit', (event) => {
-    event.preventDefault();
+function addActivity(activity) {
+    activities.push(activity);
+}
 
-    const formData = new FormData(addForm);
+function renderActivities() {
+    const activityListElement = document.getElementById('activity-list');
+    activityListElement.innerHTML = '';
 
-    const areaFormValue = formData.get('area');
-
-    const areaValue = areasObjectArray.find((area) => area.area == areaFormValue);
-    areaValue.total += Number(formData.get('time'));
-
-    const activityListChild = Array.from(activityListElement.children);
-    activityListChild.forEach((listElement) => {
-        if (listElement.getAttribute('data-area') == areaValue.area) {
-            listElement.textContent = `${areaValue.area}: ${areaValue.total / 60} hours`;
-        }
-    })
-    addForm.reset();
-});
-
-
-const activityListElement = document.getElementById('activity-list')
-const renderAreasList = () => {
-    areasObjectArray.forEach((areaItem) => {
+    activities.forEach((activity) => {
         const listElement = document.createElement('li');
-        listElement.textContent = `${areaItem.area}: ${areaItem.total / 60} hours`;
-        listElement.dataset.area = areaItem.area;
+        listElement.textContent = `${activity.activity_name} - ${activity.area} - ${activity.time}`;
         activityListElement.appendChild(listElement);
     })
 }
 
-renderAreasList();
+function calculateAreaTotals() {
+    const activityTotalElement = document.getElementById('activity-totals')
+    activityTotalElement.innerHTML = '';
+    areas.forEach((area) => {
+        var total = 0;
+        activities.forEach((activity) => {
+            if (area == activity.area) {
+                total += Number(activity.time);
+            }
+        })
+
+        const li = document.createElement('li');
+        li.textContent = `${area} - ${total} minutes`;
+        activityTotalElement.appendChild(li);
+    });
+}
+
+addForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(addForm);
+    addActivity(Object.fromEntries(formData));
+
+    renderActivities();
+    calculateAreaTotals();
+    addForm.reset();
+});
+
+
+calculateAreaTotals();
