@@ -29,7 +29,7 @@ addForm.addEventListener('submit', (event) => {
             listElement.textContent = `${areaValue.area}: ${areaValue.total / 60} hours`;
         }
     })
-
+    addForm.reset();
 });
 
 
