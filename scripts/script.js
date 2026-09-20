@@ -26,12 +26,38 @@ function deleteActivity(event) {
     calculateAreaTotals();
 };
 
-let isEditingFlag = 0;
+let isEditingFlag = false;
 let idToEdit = null;
+let cancelButton = null;
+
+function addCancelButton() {
+    if (cancelButton) return;
+    cancelButton = document.createElement('button');
+    cancelButton.type = 'button';
+    cancelButton.textContent = 'Cancel';
+    cancelButton.addEventListener('click', () => {
+        isEditingFlag = false;
+        idToEdit = null;
+        addForm.reset();
+        removeCancelButton();
+    });
+
+    addForm.appendChild(cancelButton);
+
+}
+
+function removeCancelButton() {
+    if (cancelButton) {
+        cancelButton.remove();
+        cancelButton = null;
+    }
+}
 
 function editActivity(event) {
     idToEdit = event.target.dataset.id;
-    isEditingFlag = 1;
+    isEditingFlag = true;
+    addCancelButton();
+
     const activityToEdit = activities.find((activity => activity.id === idToEdit));
 
     document.getElementById('activity_name').value = activityToEdit.activity_name;
@@ -39,6 +65,7 @@ function editActivity(event) {
     document.getElementById('time').value = activityToEdit.time;
     document.getElementById('notes').value = activityToEdit.notes;
 };
+
 
 function renderActivities() {
     const activityListElement = document.getElementById('activity-list');
@@ -94,8 +121,9 @@ addForm.addEventListener('submit', (event) => {
         activityToEdit.time = activity.time;
         activityToEdit.notes = activity.notes;
 
-        isEditingFlag = 0;
+        isEditingFlag = false;
         idToEdit = null;
+        removeCancelButton();
     }
     else addActivity(activity);
 
