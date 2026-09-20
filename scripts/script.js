@@ -1,3 +1,4 @@
+'use strict';
 
 const areas = ['Coding', 'Art', 'Reading'];
 let activities = [];
@@ -87,11 +88,14 @@ addForm.addEventListener('submit', (event) => {
     const activity = Object.fromEntries(formData);
 
     if (isEditingFlag) {
-        activityToEdit = activities.find((activity) => activity.id === idToEdit);
+        const activityToEdit = activities.find((activity) => activity.id === idToEdit);
         activityToEdit.activity_name = activity.activity_name;
         activityToEdit.area = activity.area;
         activityToEdit.time = activity.time;
         activityToEdit.notes = activity.notes;
+
+        isEditingFlag = 0;
+        idToEdit = null;
     }
     else addActivity(activity);
 
