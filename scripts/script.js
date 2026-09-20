@@ -25,6 +25,20 @@ function deleteActivity(event) {
     calculateAreaTotals();
 };
 
+let isEditingFlag = 0;
+let idToEdit = null;
+
+function editActivity(event) {
+    idToEdit = event.target.dataset.id;
+    isEditingFlag = 1;
+    const activityToEdit = activities.find((activity => activity.id === idToEdit));
+
+    document.getElementById('activity_name').value = activityToEdit.activity_name;
+    document.getElementById('area').value = activityToEdit.area;
+    document.getElementById('time').value = activityToEdit.time;
+    document.getElementById('notes').value = activityToEdit.notes;
+};
+
 function renderActivities() {
     const activityListElement = document.getElementById('activity-list');
     activityListElement.innerHTML = '';
@@ -38,6 +52,12 @@ function renderActivities() {
         deleteButton.textContent = 'Delete';
         deleteButton.addEventListener('click', deleteActivity);
 
+        const editButton = document.createElement('button');
+        editButton.dataset.id = activity.id;
+        editButton.textContent = 'Edit';
+        editButton.addEventListener('click', editActivity);
+
+        listElement.appendChild(editButton);
         listElement.appendChild(deleteButton);
         activityListElement.appendChild(listElement);
     })
@@ -62,9 +82,18 @@ function calculateAreaTotals() {
 
 addForm.addEventListener('submit', (event) => {
     event.preventDefault();
-
     const formData = new FormData(addForm);
-    addActivity(Object.fromEntries(formData));
+
+    const activity = Object.fromEntries(formData);
+
+    if (isEditingFlag) {
+        activityToEdit = activities.find((activity) => activity.id === idToEdit);
+        activityToEdit.activity_name = activity.activity_name;
+        activityToEdit.area = activity.area;
+        activityToEdit.time = activity.time;
+        activityToEdit.notes = activity.notes;
+    }
+    else addActivity(activity);
 
     renderActivities();
     calculateAreaTotals();
